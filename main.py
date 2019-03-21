@@ -17,9 +17,9 @@ def exgit(s: str) -> str:
 	return ex('git ' + s)
 
 
-def get_empty_commits() -> iter:
+def get_empty_commits(last_commit: str) -> iter:
 	def get_parsed_log() -> iter:
-		raw = exgit("log --format='%H %T'").strip()
+		raw = exgit("log --format='%H %T' '{}'..HEAD".format(last_commit)).strip()
 		lines = raw.split('\n')
 		for line in lines:
 			yield line.split()
@@ -101,8 +101,8 @@ print('common ancestor: {}'.format(common_ancestor))
 save_tag = get_save_tag(main_branch)
 print('savetag = {}'.format(save_tag))
 
-empty_commits = get_empty_commits()
-print('empty commits: {}'.format('\n'.join(empty_commits)))
+empty_commits = get_empty_commits(common_ancestor)
+# print('empty commits: \n\t{}'.format('\n\t'.join(empty_commits)))
 
 # exgit('tag "{}"'.format(save_tag))
 
