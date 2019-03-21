@@ -20,7 +20,8 @@ def exout(cmd: str):
 
 def get_empty_commits(last_commit: str) -> list:
 	def get_parsed_log() -> iter:
-		raw = exre("git log --format='%H %T' '{}~1'..HEAD".format(last_commit))
+		range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''
+		raw = exre("git log --format='%H %T' {}".format(range))
 		lines = raw.split('\n')
 		for line in lines:
 			yield line.split()
