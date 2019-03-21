@@ -34,11 +34,29 @@ def branch_exists_q(name: str) -> bool:
 	except:
 		return False
 
+def get_save_tag(branch_name: str) -> str:
+	''' For saving before doing reset --hard '''
+
+	alltags = exgit('tag --list').strip().split('\n')
+	
+	prefix = 'gitseries-save@' + branch_name + '@'
+	prefixlen = len(prefix)
+	savetags = list(filter(lambda x: x.startswith(prefix), alltags))
+
+	if not savetags:
+		return prefix + '0'
+
+	numbers = [t[prefixlen:] for t in savetags]
+	last = list(sorted(numbers))[-1]
+	lasti = int(last)
+
+	return prefix + str(lasti + 1)
+
 def get_common_ancestor(branch1: str, branch2: str) -> str:
-	return exgit('merge-base "{}" "{}"'.format(branch1, branch2))
+	return exgit('merge-base "{}" "{}"'.format(branch1, branch2)).strip()
 
 def get_branch_hash(name: str) -> str:
-	return exgit('rev-parse "{}"'.format(name))
+	return exgit('rev-parse "{}"'.format(name)).strip()
 
 def gassert(b: bool, message: str) -> None:
 	if not b:
@@ -69,4 +87,14 @@ else:
 	common_ancestor = None
 
 print('common ancestor: {}'.format(common_ancestor))
+
+exgit('checkout "{}"'.format(main_branch))
+
+save_tag = get_save_tag(main_branch)
+# print('savetag = {}'.format(save_tag))
+
+exgit('tag "{}"'.format(save_tag))
+
+exgit('reset --hard "{}"'.format(common_ancestor))
+
 
