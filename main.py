@@ -16,13 +16,21 @@ def ex(cmd: str) -> str:
 def exgit(s: str) -> str:
 	return ex('git ' + s)
 
-def get_parsed_log() -> list:
-	raw = exgit("log --format='%H %T'").strip()
-	lines = raw.split('\n')
-	ret = []
-	for line in lines:
-		ret.append(line.split())
-	return ret
+
+def get_empty_commits() -> iter:
+	def get_parsed_log() -> iter:
+		raw = exgit("log --format='%H %T'").strip()
+		lines = raw.split('\n')
+		for line in lines:
+			yield line.split()
+
+	prev = None
+	for p in reversed(list(get_parsed_log())):
+		(H, T) = p
+		if T == prev:
+			yield H
+		else:
+			prev = T
 
 def get_current_branch() -> str:
 	return exgit('rev-parse --abbrev-ref HEAD').strip()
@@ -38,7 +46,7 @@ def get_save_tag(branch_name: str) -> str:
 	''' For saving before doing reset --hard '''
 
 	alltags = exgit('tag --list').strip().split('\n')
-	
+
 	prefix = 'gitseries-save@' + branch_name + '@'
 	prefixlen = len(prefix)
 	savetags = list(filter(lambda x: x.startswith(prefix), alltags))
@@ -88,13 +96,16 @@ else:
 
 print('common ancestor: {}'.format(common_ancestor))
 
-exgit('checkout "{}"'.format(main_branch))
+# exgit('checkout "{}"'.format(main_branch))
 
 save_tag = get_save_tag(main_branch)
-# print('savetag = {}'.format(save_tag))
+print('savetag = {}'.format(save_tag))
 
-exgit('tag "{}"'.format(save_tag))
+empty_commits = get_empty_commits()
+print('empty commits: {}'.format('\n'.join(empty_commits)))
 
-exgit('reset --hard "{}"'.format(common_ancestor))
+# exgit('tag "{}"'.format(save_tag))
+
+# exgit('reset --hard "{}"'.format(common_ancestor))
 
 
