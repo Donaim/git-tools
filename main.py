@@ -17,7 +17,7 @@ def exgit(s: str) -> str:
 	return ex('git ' + s)
 
 def get_parsed_log() -> list:
-	raw = exgit("log --format='%H %t'").strip()
+	raw = exgit("log --format='%H %T'").strip()
 	lines = raw.split('\n')
 	ret = []
 	for line in lines:
