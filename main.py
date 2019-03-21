@@ -13,13 +13,18 @@ def ex(cmd: str) -> str:
 	result = result.decode('utf-8')
 	return result
 
+def ex_out(cmd: str):
+	print('ex: {}'.format(cmd))
+
+	return subprocess.check_call(cmd, stderr=subprocess.STDOUT, shell=True)
+
 def exgit(s: str) -> str:
 	return ex('git ' + s)
 
 
 def get_empty_commits(last_commit: str) -> list:
 	def get_parsed_log() -> iter:
-		raw = exgit("log --format='%H %T' '{}'..HEAD".format(last_commit)).strip()
+		raw = exgit("log --format='%H %T' '{}~1'..HEAD".format(last_commit)).strip()
 		lines = raw.split('\n')
 		for line in lines:
 			yield line.split()
@@ -90,8 +95,8 @@ gassert(len(main_branch) > 0, 'invalid current branch name')
 
 common_ancestor = None
 
-save_tag = get_save_tag(main_branch)
-exgit('tag "{}"'.format(save_tag))
+# save_tag = get_save_tag(main_branch)
+# ex_out('git tag "{}"'.format(save_tag))
 # print('savetag = {}'.format(save_tag))
 
 if branch_exists_q(main_branch):

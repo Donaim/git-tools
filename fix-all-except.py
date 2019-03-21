@@ -8,8 +8,6 @@ args = sys.argv[1:]
 file    = args[-1]
 exclude = args[:-1]
 
-print('file = "{}" exclude = {}'.format(file, exclude))
-
 def line_get_hash(line: str) -> str:
 	return line.split()[1]
 
@@ -31,10 +29,12 @@ lines = list(filter(line_is_useful, lines))
 
 mapped = [(line, line_get_hash(line)) for line in lines]
 
+print('Rebase script:')
+
 with open(file, 'w') as w:
 	for m in mapped:
 		(line, hash) = m
 		excluded = any(ex.startswith(hash) for ex in exclude)
 		modified = get_correct_line(line, excluded)
-		print(modified, end='')
+		print('\t' + modified, end='')
 		w.write(modified)
