@@ -58,10 +58,8 @@ def gassert(b: bool, message: str) -> None:
 		print('{}'.format(message), file=sys.stderr)
 		exit(1)
 
-# print('curent branch: ' + get_current_branch().strip())
-# print(get_parsed_log())
-
 current_branch = get_current_branch()
+print('curent branch: ' + current_branch)
 gassert(current_branch.endswith(DEVEL_ENDING), 'should end with -devel')
 
 main_branch = current_branch[:-len(DEVEL_ENDING)]
@@ -82,7 +80,7 @@ else:
 print('common ancestor: {}'.format(common_ancestor))
 
 empty_commits = get_empty_commits(common_ancestor)
-# print('empty commits: \n\t{}'.format('\n\t'.join(empty_commits)))
+print('empty commits: \n\t{}'.format('\n\t'.join(empty_commits)))
 
 if common_ancestor:
 	exout('git branch -D "{}"'.format(main_branch))
