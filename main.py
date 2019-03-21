@@ -6,25 +6,19 @@ import sys
 
 DEVEL_ENDING = '-devel'
 
-def ex(cmd: str) -> str:
-	print('ex: {}'.format(cmd))
-
+def exre(cmd: str) -> str:
+	print('\n> {}'.format(cmd))
 	result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
 	result = result.decode('utf-8')
-	return result
+	return result.strip()
 
-def ex_out(cmd: str):
-	print('ex: {}'.format(cmd))
-
+def exout(cmd: str):
+	print('\n> {}'.format(cmd))
 	return subprocess.check_call(cmd, stderr=subprocess.STDOUT, shell=True)
-
-def exgit(s: str) -> str:
-	return ex('git ' + s)
-
 
 def get_empty_commits(last_commit: str) -> list:
 	def get_parsed_log() -> iter:
-		raw = exgit("log --format='%H %T' '{}~1'..HEAD".format(last_commit)).strip()
+		raw = exre("git log --format='%H %T' '{}~1'..HEAD".format(last_commit))
 		lines = raw.split('\n')
 		for line in lines:
 			yield line.split()
@@ -41,11 +35,11 @@ def get_empty_commits(last_commit: str) -> list:
 	return list(get_iters())
 
 def get_current_branch() -> str:
-	return exgit('rev-parse --abbrev-ref HEAD').strip()
+	return exre('git rev-parse --abbrev-ref HEAD')
 
 def branch_exists_q(name: str) -> bool:
 	try:
-		branches = exgit('branch')
+		branches = exre('git branch')
 		return any([b.strip() == name for b in branches.split('\n')])
 	except:
 		return False
@@ -53,7 +47,7 @@ def branch_exists_q(name: str) -> bool:
 def get_save_tag(branch_name: str) -> str:
 	''' For saving before doing reset --hard '''
 
-	alltags = exgit('tag --list').strip().split('\n')
+	alltags = exre('git tag --list').split('\n')
 
 	prefix = 'gitseries-save@' + branch_name + '@'
 	prefixlen = len(prefix)
@@ -69,17 +63,15 @@ def get_save_tag(branch_name: str) -> str:
 	return prefix + str(lasti + 1)
 
 def get_common_ancestor(branch1: str, branch2: str) -> str:
-	return exgit('merge-base "{}" "{}"'.format(branch1, branch2)).strip()
+	return exre('git merge-base "{}" "{}"'.format(branch1, branch2))
 
 def get_branch_hash(name: str) -> str:
-	return exgit('rev-parse "{}"'.format(name)).strip()
+	return exre('git rev-parse "{}"'.format(name))
 
 def gassert(b: bool, message: str) -> None:
 	if not b:
 		print('{}'.format(message), file=sys.stderr)
 		exit(1)
-
-print('hello')
 
 # print('curent branch: ' + get_current_branch().strip())
 # print(get_parsed_log())
@@ -112,9 +104,9 @@ empty_commits = get_empty_commits(common_ancestor)
 # print('empty commits: \n\t{}'.format('\n\t'.join(empty_commits)))
 
 if common_ancestor:
-	exgit('branch -D "{}"'.format(main_branch))
+	exout('git branch -D "{}"'.format(main_branch))
 
-exgit('checkout -b "{}"'.format(main_branch))
+exout('git checkout -b "{}"'.format(main_branch))
 
 if not empty_commits:
 	print("DONE: no empty commits")
@@ -123,5 +115,4 @@ if not empty_commits:
 rebase_point = empty_commits[0]
 ignored_array = ' '.join(empty_commits)
 cmd = 'GIT_SEQUENCE_EDITOR="fix-all-except.py {}" git rebase --interactive --keep-empty "{}~1"'.format(ignored_array, rebase_point)
-print('cmd: {}'.format(cmd))
-subprocess.check_call(cmd, shell=True)
+exout(cmd)
