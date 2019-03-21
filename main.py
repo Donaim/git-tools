@@ -1,10 +1,12 @@
 #! /usr/bin/env python3
 
+DEVEL_ENDING = '-devel'
 
 import subprocess
 import sys
+import os
 
-DEVEL_ENDING = '-devel'
+CURENT_DIR = os.path.dirname(__file__)
 
 def exre(cmd: str) -> str:
 	print('\n> {}'.format(cmd))
@@ -92,5 +94,6 @@ if not empty_commits:
 
 rebase_point = empty_commits[0]
 ignored_array = ' '.join(empty_commits)
-cmd = 'GIT_SEQUENCE_EDITOR="fix-all-except.py {}" git rebase --interactive --keep-empty "{}~1"'.format(ignored_array, rebase_point)
+editor_path = os.path.join(CURENT_DIR, 'fix-all-except.py')
+cmd = 'GIT_SEQUENCE_EDITOR="{} {}" git rebase --interactive --keep-empty "{}~1"'.format(editor_path, ignored_array, rebase_point)
 exout(cmd)

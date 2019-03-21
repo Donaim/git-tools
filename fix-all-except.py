@@ -29,8 +29,6 @@ lines = list(filter(line_is_useful, lines))
 
 mapped = [(line, line_get_hash(line)) for line in lines]
 
-print('Rebase script:')
-
 with open(file, 'w') as w:
 	for m in mapped:
 		(line, hash) = m
