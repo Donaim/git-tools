@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 
 import subprocess
 
@@ -11,6 +13,9 @@ def ex(cmd: str) -> str:
 
 def exgit(s: str) -> str:
 	return ex('git ' + s)
+
+def gitlog(s: str) -> list:
+	raw = exgit('git log ')
 
 
 
