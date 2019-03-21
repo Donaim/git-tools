@@ -17,20 +17,23 @@ def exgit(s: str) -> str:
 	return ex('git ' + s)
 
 
-def get_empty_commits(last_commit: str) -> iter:
+def get_empty_commits(last_commit: str) -> list:
 	def get_parsed_log() -> iter:
 		raw = exgit("log --format='%H %T' '{}'..HEAD".format(last_commit)).strip()
 		lines = raw.split('\n')
 		for line in lines:
 			yield line.split()
 
-	prev = None
-	for p in reversed(list(get_parsed_log())):
-		(H, T) = p
-		if T == prev:
-			yield H
-		else:
-			prev = T
+	def get_iters():
+		prev = None
+		for p in reversed(list(get_parsed_log())):
+			(H, T) = p
+			if T == prev:
+				yield H
+			else:
+				prev = T
+
+	return list(get_iters())
 
 def get_current_branch() -> str:
 	return exgit('rev-parse --abbrev-ref HEAD').strip()
@@ -87,6 +90,10 @@ gassert(len(main_branch) > 0, 'invalid current branch name')
 
 common_ancestor = None
 
+save_tag = get_save_tag(main_branch)
+exgit('tag "{}"'.format(save_tag))
+# print('savetag = {}'.format(save_tag))
+
 if branch_exists_q(main_branch):
 	print('"{}" exists'.format(main_branch))
 	common_ancestor = get_common_ancestor(main_branch, current_branch)
@@ -96,16 +103,20 @@ else:
 
 print('common ancestor: {}'.format(common_ancestor))
 
-# exgit('checkout "{}"'.format(main_branch))
-
-save_tag = get_save_tag(main_branch)
-print('savetag = {}'.format(save_tag))
-
 empty_commits = get_empty_commits(common_ancestor)
 # print('empty commits: \n\t{}'.format('\n\t'.join(empty_commits)))
 
-# exgit('tag "{}"'.format(save_tag))
+if common_ancestor:
+	exgit('branch -D "{}"'.format(main_branch))
 
-# exgit('reset --hard "{}"'.format(common_ancestor))
+exgit('checkout -b "{}"'.format(main_branch))
 
+if not empty_commits:
+	print("DONE: no empty commits")
+	exit(0)
 
+rebase_point = empty_commits[0]
+ignored_array = ' '.join(empty_commits)
+cmd = 'GIT_SEQUENCE_EDITOR="fix-all-except.py {}" git rebase --interactive --keep-empty "{}~1"'.format(ignored_array, rebase_point)
+print('cmd: {}'.format(cmd))
+subprocess.check_call(cmd, shell=True)

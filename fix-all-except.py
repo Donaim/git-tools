@@ -34,6 +34,7 @@ mapped = [(line, line_get_hash(line)) for line in lines]
 with open(file, 'w') as w:
 	for m in mapped:
 		(line, hash) = m
-		excluded = hash in exclude
+		excluded = any(ex.startswith(hash) for ex in exclude)
 		modified = get_correct_line(line, excluded)
-		w.write(get_correct_line(line, excluded))
+		print(modified, end='')
+		w.write(modified)
