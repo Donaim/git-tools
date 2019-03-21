@@ -65,9 +65,6 @@ gassert(current_branch.endswith(DEVEL_ENDING), 'should end with -devel')
 main_branch = current_branch[:-len(DEVEL_ENDING)]
 gassert(len(main_branch) > 0, 'invalid current branch name')
 
-# print('main branch = "{}"'.format(main_branch))
-# print('exists: ' + str(branch_exists_q('master')))
-
 common_ancestor = None
 
 if branch_exists_q(main_branch):
