@@ -10,13 +10,13 @@ CURENT_DIR = os.path.dirname(__file__)
 
 def exre(cmd: str) -> str:
 	print('\n> {}'.format(cmd))
-	result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+	result = subprocess.check_output(cmd, shell=True)
 	result = result.decode('utf-8')
 	return result.strip()
 
 def exout(cmd: str):
 	print('\n> {}'.format(cmd))
-	return subprocess.check_call(cmd, stderr=subprocess.STDOUT, shell=True)
+	return subprocess.check_call(cmd, shell=True)
 
 def get_empty_commits(last_commit: str) -> list:
 	def get_parsed_log() -> iter:
