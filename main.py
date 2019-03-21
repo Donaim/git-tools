@@ -44,24 +44,6 @@ def branch_exists_q(name: str) -> bool:
 	except:
 		return False
 
-def get_save_tag(branch_name: str) -> str:
-	''' For saving before doing reset --hard '''
-
-	alltags = exre('git tag --list').split('\n')
-
-	prefix = 'gitseries-save@' + branch_name + '@'
-	prefixlen = len(prefix)
-	savetags = list(filter(lambda x: x.startswith(prefix), alltags))
-
-	if not savetags:
-		return prefix + '0'
-
-	numbers = [t[prefixlen:] for t in savetags]
-	last = list(sorted(numbers))[-1]
-	lasti = int(last)
-
-	return prefix + str(lasti + 1)
-
 def get_common_ancestor(branch1: str, branch2: str) -> str:
 	return exre('git merge-base "{}" "{}"'.format(branch1, branch2))
 
@@ -86,10 +68,6 @@ gassert(len(main_branch) > 0, 'invalid current branch name')
 # print('exists: ' + str(branch_exists_q('master')))
 
 common_ancestor = None
-
-# save_tag = get_save_tag(main_branch)
-# ex_out('git tag "{}"'.format(save_tag))
-# print('savetag = {}'.format(save_tag))
 
 if branch_exists_q(main_branch):
 	print('"{}" exists'.format(main_branch))
