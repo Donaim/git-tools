@@ -90,6 +90,6 @@ if not empty_commits:
 
 rebase_point = empty_commits[0]
 ignored_array = ' '.join(empty_commits)
-editor_path = os.path.join(CURENT_DIR, 'fix-all-except.py')
+editor_path = os.path.join(CURENT_DIR, 'gitseries-editor.py')
 cmd = 'GIT_SEQUENCE_EDITOR="{} {}" git rebase --interactive --keep-empty "{}~1"'.format(editor_path, ignored_array, rebase_point)
 exout(cmd)
