@@ -43,7 +43,14 @@ def branch_exists_q(name: str) -> bool:
 		return False
 
 def get_common_ancestor(branch1: str, branch2: str) -> str:
-	return exre('git merge-base "{}" "{}"'.format(branch1, branch2))
+	try:
+		re = exre('git merge-base "{}" "{}"'.format(branch1, branch2))
+		if re:
+			return re
+		else:
+			return None
+	except:
+		return None
 
 def get_branch_hash(name: str) -> str:
 	return exre('git rev-parse "{}"'.format(name))

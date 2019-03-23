@@ -11,15 +11,12 @@ gassert(current_branch.endswith(DEVEL_ENDING), 'should end with -devel')
 main_branch = current_branch[:-len(DEVEL_ENDING)]
 gassert(len(main_branch) > 0, 'invalid current branch name')
 
-common_ancestor = None
-
 if branch_exists_q(main_branch):
 	print('"{}" exists'.format(main_branch))
-	common_ancestor = get_common_ancestor(main_branch, current_branch)
 else:
 	print('"{}" does not exist'.format(main_branch))
-	common_ancestor = None
 
+common_ancestor = get_common_ancestor(main_branch, current_branch)
 print('common ancestor: {}'.format(common_ancestor))
 
 empty_commits = get_empty_commits(common_ancestor)
