@@ -34,6 +34,9 @@ def get_empty_commits(last_commit: str) -> list:
 
 	return list(get_iters())
 
+def get_commit_hash(commit_abbrev: str) -> str:
+	return exre('git rev-parse "{}"'.format(commit_abbrev))
+
 def get_current_branch() -> str:
 	return exre('git rev-parse --abbrev-ref HEAD')
 
