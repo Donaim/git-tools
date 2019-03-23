@@ -15,6 +15,15 @@ def exout(cmd: str):
 	print('\n> {}'.format(cmd))
 	return subprocess.check_call(cmd, shell=True)
 
+class Commit:
+	def __init__(self, H, T, s):
+		self.H = H
+		self.T = T
+		self.s = s
+	
+	def __str__(self) -> str:
+		return "{} {}".format(self.H[:7], self.s)
+
 def get_commits(last_commit: str) -> list:
 	def iterator():
 		range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''
@@ -25,18 +34,17 @@ def get_commits(last_commit: str) -> list:
 			H = sp[0]
 			T = sp[1]
 			s = line[len(H) + 1 + len(T) + 1:]
-			yield (H, T, s)
+			yield Commit(H, T, s)
 	return list(iterator())
 
 def get_empty_commits(last_commit: str) -> list:
 	def get_iters():
 		prev = None
 		for p in reversed(get_commits(last_commit)):
-			(H, T, s) = p
-			if T == prev:
-				yield H
+			if p.T == prev:
+				yield p
 			else:
-				prev = T
+				prev = p.T
 
 	return list(get_iters())
 
