@@ -24,15 +24,15 @@ def get_editor_params():
 	rebase_point = rebase_commit.H
 	print('rebase point:\n\t{}'.format(str(rebase_commit)))
 
-	ignored_array = ' '.join(c.H for c in empty_commits)
-	return (ignored_array, rebase_point, common_ancestor, main_branch)
+	picked = empty_commits
+	return (picked, rebase_point, common_ancestor, main_branch)
 
 if __name__ == '__main__':
-	(ignored_array, rebase_point, common_ancestor, main_branch) = get_editor_params()
+	(picked, rebase_point, common_ancestor, main_branch) = get_editor_params()
 
 	if common_ancestor:
 		exout('git branch -D "{}"'.format(main_branch))
 
 	exout('git checkout -b "{}"'.format(main_branch))
 
-	run_editor(ignored_array, rebase_point)
+	run_editor(picked, rebase_point)

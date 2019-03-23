@@ -16,14 +16,15 @@ squash_top = args[1]
 squash_top_hash = get_commit_hash(squash_top)
 print('squash top hash: {}'.format(squash_top_hash))
 
-(ignored_array, rebase_point, _, _) = gitseries.get_editor_params()
+(picked, rebase_point, _, _) = gitseries.get_editor_params()
 
 try: exout("git branch -D tmp")
 except: pass
 exout("git checkout -b tmp")
 
 commits = get_commits(rebase_point)
-cs = [str(c) for c in commits]
-print('commits:\n\t{}'.format('\n\t'.join(cs)))
+take = list(takewhile( lambda c: c.H != squash_top_hash, commits ))
+print('taken: \n\t{}'.format('\n\t'.join(str(c) for c in take)))
 
-# dropwhile()
+picked += take
+run_editor(picked, rebase_point)
