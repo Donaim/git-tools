@@ -20,8 +20,9 @@ def get_editor_params():
 
 	empty_commits = get_empty_commits(common_ancestor)
 	print('empty commits: \n\t{}'.format('\n\t'.join(empty_commits)))
-
 	rebase_point = empty_commits[0]
+	print('rebase point:\n\t{}'.format(rebase_point))
+
 	ignored_array = ' '.join(empty_commits)
 	return (ignored_array, rebase_point, common_ancestor, main_branch)
 
