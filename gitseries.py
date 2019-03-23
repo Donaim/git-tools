@@ -27,10 +27,6 @@ if common_ancestor:
 
 exout('git checkout -b "{}"'.format(main_branch))
 
-if not empty_commits:
-	print("DONE: no empty commits")
-	exit(0)
-
 rebase_point = empty_commits[0]
 ignored_array = ' '.join(empty_commits)
 cmd = 'GIT_SEQUENCE_EDITOR="{} {}" git rebase --interactive --keep-empty "{}~1"'.format('gitseries-editor.py', ignored_array, rebase_point)
