@@ -36,11 +36,8 @@ def get_current_branch() -> str:
 	return exre('git rev-parse --abbrev-ref HEAD')
 
 def branch_exists_q(name: str) -> bool:
-	try:
-		branches = exre('git branch')
-		return any([b.strip() == name for b in branches.split('\n')])
-	except:
-		return False
+	branches = exre('git branch')
+	return any(b.strip('*').strip() == name for b in branches.split('\n'))
 
 def get_common_ancestor(branch1: str, branch2: str) -> str:
 	try:
