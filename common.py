@@ -15,6 +15,15 @@ def exout(cmd: str):
 	print('\n> {}'.format(cmd))
 	return subprocess.check_call(cmd, shell=True)
 
+def get_commits(last_commit: str) -> list:
+	def iterator():
+		range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''
+		raw = exre("git log --format='%H' {}".format(range))
+		lines = raw.split('\n')
+		for line in lines:
+			yield line
+	return list(iterator())
+
 def get_empty_commits(last_commit: str) -> list:
 	def get_parsed_log() -> iter:
 		range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''

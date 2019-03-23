@@ -21,15 +21,16 @@ def get_editor_params():
 	empty_commits = get_empty_commits(common_ancestor)
 	print('empty commits: \n\t{}'.format('\n\t'.join(empty_commits)))
 
+	rebase_point = empty_commits[0]
+	ignored_array = ' '.join(empty_commits)
+	return (ignored_array, rebase_point, common_ancestor, main_branch)
+
+if __name__ == '__main__':
+	(ignored_array, rebase_point, common_ancestor, main_branch) = get_editor_params()
+
 	if common_ancestor:
 		exout('git branch -D "{}"'.format(main_branch))
 
 	exout('git checkout -b "{}"'.format(main_branch))
 
-	rebase_point = empty_commits[0]
-	ignored_array = ' '.join(empty_commits)
-	return (ignored_array, rebase_point)
-
-if __name__ == '__main__':
-	(ignored_array, rebase_point) = get_editor_params()
 	run_editor(ignored_array, rebase_point)
