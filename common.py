@@ -51,6 +51,10 @@ def get_empty_commits(last_commit: str) -> list:
 def get_commit_hash(commit_abbrev: str) -> str:
 	return exre('git rev-parse "{}"'.format(commit_abbrev))
 
+def get_commit_print(commit_hash: str) -> str:
+	ret = subprocess.check_output('git show --quiet --format="%h %s" "{}"'.format(commit_hash), shell=True)
+	return ret.decode('utf-8').strip()
+
 def get_current_branch() -> str:
 	return exre('git rev-parse --abbrev-ref HEAD')
 

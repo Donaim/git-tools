@@ -16,7 +16,7 @@ def get_editor_params():
 		print('"{}" does not exist'.format(main_branch))
 
 	common_ancestor = get_common_ancestor(main_branch, current_branch)
-	print('common ancestor: {}'.format(common_ancestor))
+	print('common ancestor: {}'.format(get_commit_print(common_ancestor)))
 
 	empty_commits = get_empty_commits(common_ancestor)
 	print('empty commits: \n\t{}'.format('\n\t'.join(str(c) for c in empty_commits)))
