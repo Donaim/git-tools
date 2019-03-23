@@ -22,7 +22,8 @@ try: exout("git branch -D tmp")
 except: pass
 exout("git checkout -b tmp")
 
-cs = [str(c) for c in get_commits(rebase_point)]
+commits = get_commits(rebase_point)
+cs = [str(c) for c in commits]
 print('commits:\n\t{}'.format('\n\t'.join(cs)))
 
 # dropwhile()
