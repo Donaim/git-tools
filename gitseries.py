@@ -25,10 +25,10 @@ def get_editor_params():
 	print('rebase point:\n\t{}'.format(str(rebase_commit)))
 
 	picked = empty_commits
-	return (picked, rebase_point, common_ancestor, main_branch)
+	return (picked, rebase_point, common_ancestor, main_branch, current_branch)
 
 if __name__ == '__main__':
-	(picked, rebase_point, common_ancestor, main_branch) = get_editor_params()
+	(picked, rebase_point, common_ancestor, main_branch, current_branch) = get_editor_params()
 
 	if common_ancestor:
 		exout('git branch -D "{}"'.format(main_branch))

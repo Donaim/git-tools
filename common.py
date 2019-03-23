@@ -75,6 +75,24 @@ def get_common_ancestor(branch1: str, branch2: str) -> str:
 def get_branch_hash(name: str) -> str:
 	return exre('git rev-parse "{}"'.format(name))
 
+def get_save_tag(branch_name: str) -> str:
+	''' For saving before doing reset --hard or rebase '''
+
+	alltags = exre('git tag --list').split('\n')
+
+	prefix = 'gitseries-save@' + branch_name + '@'
+	prefixlen = len(prefix)
+	savetags = list(filter(lambda x: x.startswith(prefix), alltags))
+
+	if not savetags:
+		return prefix + '0'
+
+	numbers = [t[prefixlen:] for t in savetags]
+	last = list(sorted(numbers))[-1]
+	lasti = int(last)
+
+	return prefix + str(lasti + 1)
+
 def gassert(b: bool, message: str) -> None:
 	if not b:
 		print('{}'.format(message), file=sys.stderr)
