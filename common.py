@@ -61,3 +61,7 @@ def gassert(b: bool, message: str) -> None:
 	if not b:
 		print('{}'.format(message), file=sys.stderr)
 		exit(1)
+
+def run_editor(ignored_array: list, rebase_point: str):
+	cmd = 'GIT_SEQUENCE_EDITOR="{} {}" git rebase --interactive --keep-empty "{}~1"'.format('gitseries-editor.py', ignored_array, rebase_point)
+	exout(cmd)
