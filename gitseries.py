@@ -1,7 +1,5 @@
 #! /usr/bin/env python3
 
-DEVEL_ENDING = '-devel'
-
 from common import *
 
 current_branch = get_current_branch()

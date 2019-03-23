@@ -3,6 +3,8 @@ import subprocess
 import sys
 import os
 
+DEVEL_ENDING = '-devel'
+
 def exre(cmd: str) -> str:
 	print('\n> {}'.format(cmd))
 	result = subprocess.check_output(cmd, shell=True)
