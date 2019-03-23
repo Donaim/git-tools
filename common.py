@@ -18,24 +18,21 @@ def exout(cmd: str):
 def get_commits(last_commit: str) -> list:
 	def iterator():
 		range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''
-		raw = exre("git log --format='%H' {}".format(range))
+		raw = exre("git log --format='%H %T %s' {}".format(range))
 		lines = raw.split('\n')
 		for line in lines:
-			yield line
+			sp = line.split()
+			H = sp[0]
+			T = sp[1]
+			s = line[len(H) + 1 + len(T) + 1:]
+			yield (H, T, s)
 	return list(iterator())
 
 def get_empty_commits(last_commit: str) -> list:
-	def get_parsed_log() -> iter:
-		range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''
-		raw = exre("git log --format='%H %T' {}".format(range))
-		lines = raw.split('\n')
-		for line in lines:
-			yield line.split()
-
 	def get_iters():
 		prev = None
-		for p in reversed(list(get_parsed_log())):
-			(H, T) = p
+		for p in reversed(get_commits(last_commit)):
+			(H, T, s) = p
 			if T == prev:
 				yield H
 			else:
