@@ -16,14 +16,14 @@ squash_top = args[1]
 squash_top_hash = get_commit_hash(squash_top)
 print('squash top hash: {}'.format(squash_top_hash))
 
-(picked, rebase_point, _, _, current_branch) = gitseries.get_editor_params()
+cs = gitseries.CurrentSeries()
 
-savetag = get_save_tag(current_branch)
+savetag = get_save_tag(cs.current_branch)
 exout('git tag "{}"'.format(savetag))
 
-commits = get_commits(rebase_point)
+commits = get_commits(cs.rebase_point)
 take = list(takewhile( lambda c: c.H != squash_top_hash, commits ))
 print('taken: \n\t{}'.format('\n\t'.join(str(c) for c in take)))
 
-picked += take
-run_editor(picked, rebase_point)
+run_editor(cs.empty_commits + take, cs.rebase_point)
+

@@ -3,8 +3,8 @@
 from common import *
 import gitseries
 
-(_, rebase_point, _, _, _) = gitseries.get_editor_params()
+cs = gitseries.CurrentSeries()
 
-try: exout('git rebase --interactive --keep-empty "{}"'.format(rebase_point))
+try: exout('git rebase --interactive --keep-empty "{}"'.format(cs.rebase_point))
 except: pass
 
