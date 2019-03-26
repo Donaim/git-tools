@@ -22,9 +22,9 @@ class CurrentSeries:
 			last_tag = SERIES_BEGIN_TAG_PREFIX + self.main_branch
 			if check_tag_exists(last_tag):
 				last = last_tag
-				print('using {} as rebase point'.format(last_tag))
+				print('using {} as common ancestor'.format(last_tag))
 			else:
-				print('tag {} does not exists -> using --root as rebase point'.format(last_tag))
+				print('tag {} does not exists -> using --root as common ancestor'.format(last_tag))
 			self.common_ancestor = last
 
 		print('common ancestor: {}'.format(get_commit_print(self.common_ancestor)))
