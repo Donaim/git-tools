@@ -37,10 +37,10 @@ def get_commits(last_commit: str) -> list:
 			yield Commit(H, T, s)
 	return list(iterator())
 
-def get_empty_commits(last_commit: str) -> list:
+def get_empty_commits(all_commits: list) -> list:
 	def get_iters():
 		prev = None
-		for p in reversed(get_commits(last_commit)):
+		for p in reversed(all_commits):
 			if p.T == prev:
 				yield p
 			else:
