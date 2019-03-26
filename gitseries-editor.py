@@ -9,7 +9,7 @@ file = args[-1]
 
 di = {}
 curr = None
-for a in args[1:-1]:
+for a in args[:-1]:
 	if a.startswith("--"):
 		curr = a[2:]
 		di[curr] = []
