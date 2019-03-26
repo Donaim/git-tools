@@ -75,6 +75,10 @@ def get_common_ancestor(branch1: str, branch2: str) -> str:
 def get_branch_hash(name: str) -> str:
 	return exre('git rev-parse "{}"'.format(name))
 
+def check_tag_exists(name: str) -> bool:
+	alltags = exre('git tag --list').split('\n')
+	return bool(name in alltags)
+
 def get_save_tag(branch_name: str) -> str:
 	''' For saving before doing reset --hard or rebase '''
 
@@ -98,7 +102,7 @@ def gassert(b: bool, message: str) -> None:
 		print('{}'.format(message), file=sys.stderr)
 		exit(1)
 
-def run_editor(picked: list, rebase_point: str):
-	ignored_array = ' '.join(c.H for c in picked)
-	cmd = 'GIT_SEQUENCE_EDITOR="{} {}" git rebase --interactive --keep-empty "{}~1"'.format('gitseries-editor.py', ignored_array, rebase_point)
+def run_editor(args: list, rebase_point: str):
+	args = ' '.join(args)
+	cmd = 'GIT_SEQUENCE_EDITOR="{} {}" git rebase --interactive --keep-empty "{}~1"'.format('gitseries-editor.py', args, rebase_point)
 	exout(cmd)
