@@ -15,6 +15,10 @@ def exout(cmd: str):
 	print('\n> {}'.format(cmd))
 	return subprocess.check_call(cmd, shell=True)
 
+def exoutn(cmd: str):
+	print('> {}'.format(cmd))
+	return subprocess.check_call(cmd, shell=True)
+
 class Commit:
 	def __init__(self, H, T, s):
 		self.H = H

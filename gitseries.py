@@ -2,6 +2,8 @@
 
 from common import *
 
+SERIES_BEGIN_TAG_PREFIX = 'gitseries-begin@'
+
 class CurrentSeries:
 	def __init__(self, create: bool = False):
 		self.current_branch = get_current_branch()
@@ -30,15 +32,22 @@ class CurrentSeries:
 
 	def create_main_branch(self):
 		last = None
-		if check_tag_exists('gitseries-last@{}'.format(self.main_branch)):
-			last = 'gitseries-last@{}'.format(self.main_branch)
+		last_tag = SERIES_BEGIN_TAG_PREFIX + self.main_branch
+		if check_tag_exists(last_tag):
+			last = last_tag
+			print('using {} as rebase point'.format(last_tag))
+		else:
+			print('tag {} does not exists -> using --root as rebase point'.format(last_tag))
 
 		all_commits = get_commits(last)
 		empty_ones = get_empty_commits(all_commits)
+		print('empty commits: \n\t{}'.format('\n\t'.join(str(c) for c in empty_ones)))
+
 		first_empty = empty_ones[0]
-		exout('git checkout "{}"~1'.format(first_empty.H))
-		exout('git branch "{}"'.format(self.main_branch))
-		exout('git checkout "{}"'.format(self.current_branch))
+		exout('git checkout "{}"~1 --quiet'.format(first_empty.H))
+		exoutn('git branch "{}"'.format(self.main_branch))
+		exoutn('git checkout "{}" --quiet'.format(self.current_branch))
+		print("Created main branch")
 
 if __name__ == '__main__':
 	cs = CurrentSeries(True)
