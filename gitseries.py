@@ -5,7 +5,7 @@ from common import *
 SERIES_BEGIN_TAG_PREFIX = 'gitseries-begin@'
 
 class CurrentSeries:
-	def __init__(self, create: bool = False):
+	def __init__(self):
 		self.current_branch = get_current_branch()
 		print('curent branch: ' + self.current_branch)
 		gassert(self.current_branch.endswith(DEVEL_ENDING), 'should end with -devel')
@@ -37,7 +37,7 @@ class CurrentSeries:
 		print('rebase point:\n\t{}'.format(str(self.rebase_commit)))
 
 if __name__ == '__main__':
-	cs = CurrentSeries(True)
+	cs = CurrentSeries()
 
 	try: exout('git branch -D "{}"'.format(cs.main_branch))
 	except: pass
