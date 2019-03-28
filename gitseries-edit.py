@@ -11,6 +11,7 @@ print('')
 print('Series:')
 for (i, c) in enumerate(commits):
 	print('\t{}) {}'.format(i, c.s))
+print('\t{}) {}'.format(len(commits), "BASE"))
 
 index  = int(input('Chosen: '))
 if index == 0:
