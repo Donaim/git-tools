@@ -18,12 +18,14 @@ print('squash top hash: {}'.format(squash_top_hash))
 
 cs = gitseries.CurrentSeries()
 
-savetag = get_save_tag(cs.current_branch)
-exout('git tag "{}"'.format(savetag))
-
 commits = get_commits(cs.rebase_point)
 take = list(takewhile( lambda c: c.H != squash_top_hash, commits ))
 print('taken: \n\t{}'.format('\n\t'.join(str(c) for c in take)))
 
-run_editor(cs.empty_commits + take, cs.rebase_point)
+savetag = get_save_tag(cs.current_branch)
+exout('git tag "{}"'.format(savetag))
+
+non_empty = [c for c in cs.commits if c not in cs.empty_commits]
+hashes = [c.H for c in non_empty + take]
+run_editor(['--fixup'] + hashes, cs.rebase_point)
 
