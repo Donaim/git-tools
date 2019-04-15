@@ -28,18 +28,24 @@ class Commit:
 	def __str__(self) -> str:
 		return "{} {}".format(self.H[:7], self.s)
 
+COMMIT_FORMAT = '%H %T %s'
+
+def get_commit_by_format(formatted: str) -> Commit:
+	sp = formatted.split()
+	H = sp[0]
+	T = sp[1]
+	s = formatted[len(H) + 1 + len(T) + 1:]
+	return Commit(H, T, s)
+
+def get_commit_by_hash(commit_abbrev: str) -> Commit:
+	formatted = exre("git show --quiet --format='{}' '{}'".format(COMMIT_FORMAT, commit_abbrev))
+	return get_commit_by_format(formatted)
+
 def get_commits(last_commit: str) -> list:
-	def iterator():
-		range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''
-		raw = exre("git log --format='%H %T %s' {}".format(range))
-		lines = raw.split('\n')
-		for line in lines:
-			sp = line.split()
-			H = sp[0]
-			T = sp[1]
-			s = line[len(H) + 1 + len(T) + 1:]
-			yield Commit(H, T, s)
-	return list(iterator())
+	range = ('"{}~1"..HEAD'.format(last_commit)) if last_commit else ''
+	raw = exre("git log --format='{}' {}".format(COMMIT_FORMAT, range))
+	lines = raw.split('\n')
+	return list(map(get_commit_by_format, lines))
 
 def get_empty_commits(all_commits: list) -> list:
 	def get_iters():
