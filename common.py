@@ -89,7 +89,7 @@ def check_tag_exists(name: str) -> bool:
 	alltags = exre('git tag --list').split('\n')
 	return bool(name in alltags)
 
-def get_save_tag(branch_name: str) -> str:
+def get_save_tag(branch_name: str, new: bool = False) -> str:
 	''' For saving before doing reset --hard or rebase '''
 
 	alltags = exre('git tag --list').split('\n')
@@ -103,9 +103,12 @@ def get_save_tag(branch_name: str) -> str:
 
 	numbers = [t[prefixlen:] for t in savetags]
 	last = list(sorted(numbers))[-1]
-	lasti = int(last)
 
-	return prefix + str(lasti + 1)
+	if new:
+		lasti = int(last)
+		return prefix + str(lasti + 1)
+	else:
+		return last
 
 def gassert(b: bool, message: str) -> None:
 	if not b:
