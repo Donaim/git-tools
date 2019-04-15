@@ -103,12 +103,12 @@ def get_save_tag(branch_name: str, new: bool = True) -> str:
 
 	numbers = [t[prefixlen:] for t in savetags]
 	last = list(sorted(numbers))[-1]
+	lasti = int(last)
 
 	if new:
-		lasti = int(last)
 		return prefix + str(lasti + 1)
 	else:
-		return last
+		return prefix + str(lasti + 0)
 
 def gassert(b: bool, message: str) -> None:
 	if not b:
