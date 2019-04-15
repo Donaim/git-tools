@@ -26,13 +26,19 @@ class CurrentSeries:
 			else:
 				print('tag {} does not exists -> using --root as common ancestor'.format(last_tag))
 			self.common_ancestor = last
+		self.common_ancestor = get_commit_by_hash(self.common_ancestor)
 
-		print('common ancestor: {}'.format(get_commit_print(self.common_ancestor)))
+		print('common ancestor: {}'.format(self.common_ancestor))
 
-		self.commits = get_commits(self.common_ancestor)
+		self.commits = get_commits(self.common_ancestor.H)
 		self.empty_commits = get_empty_commits(self.commits)
 		print('empty commits: \n\t{}'.format('\n\t'.join(str(c) for c in self.empty_commits)))
-		self.rebase_commit = self.empty_commits[0]
+
+		if self.empty_commits:
+			self.rebase_commit = self.empty_commits[0]
+		else:
+			self.rebase_commit = self.common_ancestor
+
 		self.rebase_point = self.rebase_commit.H
 		print('rebase point:\n\t{}'.format(str(self.rebase_commit)))
 
