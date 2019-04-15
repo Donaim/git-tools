@@ -89,7 +89,7 @@ def check_tag_exists(name: str) -> bool:
 	alltags = exre('git tag --list').split('\n')
 	return bool(name in alltags)
 
-def get_save_tag(branch_name: str, new: bool = False) -> str:
+def get_save_tag(branch_name: str, new: bool = True) -> str:
 	''' For saving before doing reset --hard or rebase '''
 
 	alltags = exre('git tag --list').split('\n')
